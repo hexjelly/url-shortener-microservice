@@ -1,19 +1,20 @@
+/* jshint node: true, esversion: 6 */
 var request = require('supertest');
 var rewire = require('rewire');
 var assert = require('assert');
 var server;
 
 // route responses
-describe('Routes', function () {
-  before(function () {
+describe('Routes', () => {
+  before(() => {
     server = require('../server').listen(4000);
   });
 
-  after(function () {
+  after(() => {
     server.close();
   });
 
-  it('/ responds with html', function (done) {
+  it('/ responds with html', done => {
     request(server)
       .get('/')
       .set('Accept', 'text/html')
@@ -21,7 +22,7 @@ describe('Routes', function () {
       .expect(200, done);
   });
 
-  it('/new responds with json', function (done) {
+  it('/new responds with json', done => {
     request(server)
       .get('/new')
       .set('Accept', 'application/json')
@@ -29,7 +30,7 @@ describe('Routes', function () {
       .expect(200, done);
   });
 
-  it('/new/* responds with json', function (done) {
+  it('/new/* responds with json', done => {
     request(server)
       .get('/new/abcdef')
       .set('Accept', 'application/json')
@@ -37,21 +38,21 @@ describe('Routes', function () {
       .expect(200, done);
   });
 
-  it('/a gives 301', function (done) {
+  it('/a gives 301', done => {
     request(server)
       .get('/a')
       .expect(301, done);
   });
 
-  it('/b gives 404', function (done) {
+  it('/b gives 404', done => {
     request(server)
       .get('/b')
       .expect(404, done);
   });
 });
 
-describe('getShortUrl', function () {
-  before(function () {
+describe('getShortUrl', () => {
+  before(() => {
     var server = rewire('../server');
     getShortUrl = server.__get__('getShortUrl');
   });
@@ -59,8 +60,8 @@ describe('getShortUrl', function () {
   it('Gives correct results, test case #1');
 });
 
-describe('getOriginalUrl', function () {
-  before(function () {
+describe('getOriginalUrl', () => {
+  before(() => {
     var server = rewire('../server');
     getShortUrl = server.__get__('getOriginalUrl');
   });
