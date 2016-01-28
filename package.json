@@ -4,7 +4,9 @@
   "description": "URL shortener microservice",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node index",
+    "test": "istanbul cover node_modules/mocha/bin/_mocha -- -R spec",
+    "coveralls": "cat ./coverage/lcov.info | ./node_modules/.bin/coveralls"
   },
   "repository": {
     "type": "git",
@@ -15,5 +17,16 @@
   "bugs": {
     "url": "https://github.com/hexjelly/url-shortener-microservice/issues"
   },
-  "homepage": "https://github.com/hexjelly/url-shortener-microservice#readme"
+  "homepage": "https://github.com/hexjelly/url-shortener-microservice#readme",
+  "dependencies": {
+    "express": "^4.13.4",
+    "mongoose": "^4.3.7"
+  },
+  "devDependencies": {
+    "coveralls": "^2.11.6",
+    "istanbul": "^0.4.2",
+    "mocha": "^2.4.4",
+    "rewire": "^2.5.1",
+    "supertest": "^1.1.0"
+  }
 }
