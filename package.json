@@ -1,0 +1,19 @@
+{
+  "name": "url-shortener-microservice",
+  "version": "1.0.0",
+  "description": "URL shortener microservice",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/hexjelly/url-shortener-microservice.git"
+  },
+  "author": "Hexjelly",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/hexjelly/url-shortener-microservice/issues"
+  },
+  "homepage": "https://github.com/hexjelly/url-shortener-microservice#readme"
+}
