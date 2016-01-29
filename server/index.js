@@ -1,22 +1,37 @@
 /* jshint node: true, esversion: 6 */
 'use strict';
 
-var env = process.env.NODE_ENV;
+var env = process.env.NODE_ENV || 'production';
 var config = require('../config');
 var express = require('express');
 var path = require('path');
-var mongoose = require('mongoose');
+var mongo = require('mongodb').MongoClient;
 var app = express();
 
-//app.set('dbUrl', config.db[app.settings.env]);
-//mongoose.connect(app.get('dbUrl'));
 
 function getShortUrl (url) {
-  var result = { url: url };
-  return result;
+  if (/https?\:\/\/\S+\.\S+/i.test(url)) {
+    return { originalURL: url, shortURL: shortUrl };
+  } else {
+    return { error: 'Invalid URL' };
+  }
+  /*
+  mongo.connect(config[env].db, (err, db) => {
+    if (!err) {
+      db.collection('restaurants').insertOne({ "address": 17 }, (err, result) => {
+        if (!err) {
+          console.log("Inserted a document into the restaurants collection.");
+        }
+      });
+      db.close();
+    }
+  });
+  */
 }
 
 function getOriginalUrl (id) {
+
+
   var result = { id: id };
   return result;
 }

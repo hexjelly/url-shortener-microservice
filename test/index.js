@@ -1,4 +1,7 @@
 /* jshint node: true, esversion: 6 */
+
+process.env.NODE_ENV = 'test';
+
 var request = require('supertest');
 var rewire = require('rewire');
 var assert = require('assert');
