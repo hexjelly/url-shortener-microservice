@@ -20,7 +20,7 @@
   "homepage": "https://github.com/hexjelly/url-shortener-microservice#readme",
   "dependencies": {
     "express": "^4.13.4",
-    "mongodb": "^2.1.4"
+    "mongodb": "^2.2.20"
   },
   "devDependencies": {
     "coveralls": "^2.11.6",
