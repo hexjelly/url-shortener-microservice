@@ -23,7 +23,7 @@
     "mongodb": "^2.2.22"
   },
   "devDependencies": {
-    "coveralls": "^2.11.6",
+    "coveralls": "^2.11.16",
     "istanbul": "^0.4.2",
     "mocha": "^3.2.0",
     "rewire": "^2.5.1",
