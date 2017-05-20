@@ -94,13 +94,13 @@ describe('Routes', () => {
   })
 
   it('/2 gives 307', done => {
-    return request(server)
+    request(server)
       .get('/2')
       .expect(307, done)
   })
 
   it('/3 gives 200 and error message', done => {
-    return request(server)
+    request(server)
       .get('/3')
       .expect(res => {
         assert.equal("Short URL not found", res.body.error)
