@@ -39,32 +39,46 @@ describe('Routes', () => {
       .expect(200, done)
   })
 
-  it('/a gives 301', done => {
+  it('/1 gives 301', done => {
     request(server)
-      .get('/a')
+      .get('/1')
       .expect(301, done)
   })
 
-  it('/b gives 404', done => {
+  it('/2 gives 404', done => {
     request(server)
-      .get('/b')
+      .get('/2')
       .expect(404, done)
   })
 })
 
 describe('getShortUrl', () => {
+  let server
+  let isValidUrl
+
   before(() => {
-    let server = rewire('../server')
-    getShortUrl = server.__get__('getShortUrl')
+    server = rewire('../server')
+    isValidUrl = server.__get__('isValidUrl')
   })
 
-  it('Gives correct results, test case #1')
+  it('Gives correct results', () => {
+    assert.equal(true, isValidUrl("https://google.com"))
+    assert.equal(true, isValidUrl("http://google.com"))
+  })
+
+  it('Gives error for invalid URLs', () => {
+    assert.equal(false, isValidUrl("https://google"))
+    assert.equal(false, isValidUrl("http://google,com"))
+  })
 })
 
 describe('getOriginalUrl', () => {
+  let server
+  let originalURL
+
   before(() => {
-    var server = rewire('../server')
-    getShortUrl = server.__get__('getOriginalUrl')
+    server = rewire('../server')
+    getOriginalUrl = server.__get__('getOriginalUrl')
   })
 
   it('Gives correct results, test case #1')

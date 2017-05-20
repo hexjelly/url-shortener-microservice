@@ -9,13 +9,19 @@ let db
 mongo.connect(config[env].db, (err, mdb) => {
   if (!err) {
     db = mdb
+  } else {
+    return console.log(err)
   }
 })
 
-function getShortUrl (url) {
-  if (/https?\:\/\/\S+\.\S+/i.test(url)) {
+function isValidUrl (url) {
+  return /https?\:\/\/\S+\.\S+/i.test(url)
+}
 
-    let shortUrl = ''
+function getShortUrl (url) {
+  if (isValidUrl(url)) {
+    let shortUrl = getNextSequence("test")
+    if (shortUrl.error) return shortUrl
     return { originalURL: url, shortURL: shortUrl }
   } else {
     return { error: 'Invalid URL' }
@@ -30,13 +36,16 @@ function getOriginalUrl (id) {
 }
 
 function getNextSequence (collectionName) {
+  if (!db) {
+    return { error: "No database connection" }
+  }
   if (!db.getCollection(collectionName).exists()) {
     db.collection(collectionName).insertOne({ _id: 'counter', seq: 0 })
   }
 
   let ret = db.collection(collectionName).findOneAndUpdate(
     { _id: 'counter' }, { $inc: { seq: 1 } }, { returnNewDocument: true }
-   )
+  )
 
   return ret.seq
 }
