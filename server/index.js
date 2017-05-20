@@ -15,7 +15,7 @@ mongo.connect(config[env].db, (err, mdb) => {
 
   })
   db.createCollection("counter", {}, (err, collection) => {
-    
+
   })
 })
 
@@ -94,6 +94,9 @@ app.get('/new', (req, res) => {
 app.get('/new/:url(*)', (req, res) => {
   getShortUrl(req.params.url, (err, result) => {
     if (err) console.log(err)
+    if (result.error) {
+      res.json(result)
+    }
     else {
       let selfUrl = `${req.protocol}://${req.get("host")}/${result}`
       res.json({ originalUrl: req.params.url, shortUrl: selfUrl })

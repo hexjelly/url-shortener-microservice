@@ -19,7 +19,7 @@ describe('Routes', () => {
 
       })
       db.collection("counter").drop((err, reply) => {
-        
+
       })
     })
 
@@ -41,19 +41,25 @@ describe('Routes', () => {
       .expect(200, done)
   })
 
-  it('/new responds with json', done => {
+  it('/new responds with json and error message', done => {
     request(server)
       .get('/new')
       .set('Accept', 'application/json')
       .expect('Content-Type', /json/)
+      .expect(res => {
+        assert.equal("No URL provided", res.body.error)
+      })
       .expect(200, done)
   })
 
-  it('/new/* responds with json', done => {
+  it('/new/abcdef responds with json and error message', done => {
     request(server)
       .get('/new/abcdef')
       .set('Accept', 'application/json')
       .expect('Content-Type', /json/)
+      .expect(res => {
+        assert.equal("Invalid URL", res.body.error)
+      })
       .expect(200, done)
   })
 
@@ -62,6 +68,22 @@ describe('Routes', () => {
       .get('/new/https://google.com')
       .set('Accept', 'application/json')
       .expect('Content-Type', /json/)
+      .expect(res => {
+        assert.equal("https://google.com", res.body.originalUrl)
+        assert.equal("http://127.0.0.1:4000/1", res.body.shortUrl)
+      })
+      .expect(200, done)
+  })
+
+  it('/new/https://youtube.com responds with short URL', done => {
+    request(server)
+      .get('/new/https://youtube.com')
+      .set('Accept', 'application/json')
+      .expect('Content-Type', /json/)
+      .expect(res => {
+        assert.equal("https://youtube.com", res.body.originalUrl)
+        assert.equal("http://127.0.0.1:4000/2", res.body.shortUrl)
+      })
       .expect(200, done)
   })
 
@@ -71,9 +93,18 @@ describe('Routes', () => {
       .expect(307, done)
   })
 
-  it('/2 gives 200 and error message', done => {
-    request(server)
+  it('/2 gives 307', done => {
+    return request(server)
       .get('/2')
+      .expect(307, done)
+  })
+
+  it('/3 gives 200 and error message', done => {
+    return request(server)
+      .get('/3')
+      .expect(res => {
+        assert.equal("Short URL not found", res.body.error)
+      })
       .expect(200, done)
   })
 })
