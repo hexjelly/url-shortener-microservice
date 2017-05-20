@@ -12,10 +12,10 @@ mongo.connect(config[env].db, (err, mdb) => {
   db = mdb
   // create collections if it doesn't exist
   db.createCollection("urls", {}, (err, collection) => {
-    if (err) return console.log(err)
+
   })
   db.createCollection("counter", {}, (err, collection) => {
-    if (err) return console.log(err)
+    
   })
 })
 

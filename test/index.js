@@ -1,13 +1,31 @@
-process.env.NODE_ENV = 'test'
+const env = process.env.NODE_ENV = 'test'
+const config = require('../config')
 
 const request = require('supertest')
 const rewire = require('rewire')
 const assert = require('assert')
+const mongo = require('mongodb').MongoClient
+const execSync = require('child_process').execSync;
+
 let server
 
 // route responses
 describe('Routes', () => {
   before(() => {
+    // reset test database
+    mongo.connect(config[env].db, (err, db) => {
+      if (err) return console.log(err)
+      db.collection("urls").drop((err, reply) => {
+
+      })
+      db.collection("counter").drop((err, reply) => {
+        
+      })
+    })
+
+    // wait for any potential db sync issues etc.
+    execSync("sleep 1")
+
     server = require('../server').listen(4000)
   })
 
@@ -39,16 +57,24 @@ describe('Routes', () => {
       .expect(200, done)
   })
 
-  it('/1 gives 301', done => {
+  it('/new/https://google.com responds with short URL', done => {
     request(server)
-      .get('/1')
-      .expect(301, done)
+      .get('/new/https://google.com')
+      .set('Accept', 'application/json')
+      .expect('Content-Type', /json/)
+      .expect(200, done)
   })
 
-  it('/2 gives 404', done => {
+  it('/1 gives 307', done => {
+    request(server)
+      .get('/1')
+      .expect(307, done)
+  })
+
+  it('/2 gives 200 and error message', done => {
     request(server)
       .get('/2')
-      .expect(404, done)
+      .expect(200, done)
   })
 })
 
@@ -67,36 +93,4 @@ describe('isValidUrl', () => {
     assert.equal(false, isValidUrl("https://google"))
     assert.equal(false, isValidUrl("http://google,com"))
   })
-})
-
-describe('getShortUrl', () => {
-  let server
-  let getShortUrl
-
-  before(() => {
-    server = rewire('../server')
-    getShortUrl = server.__get__('getShortUrl')
-  })
-
-  it('Gives correct results', () => {
-    assert.deepEqual(true, getShortUrl("https://google.com"))
-    assert.deepEqual(true, getShortUrl("http://google.com"))
-  })
-
-  it('Gives error for invalid URLs', () => {
-    assert.deepEqual(false, getShortUrl("https://google"))
-    assert.deepEqual(false, getShortUrl("http://google,com"))
-  })
-})
-
-describe('getOriginalUrl', () => {
-  let server
-  let originalURL
-
-  before(() => {
-    server = rewire('../server')
-    getOriginalUrl = server.__get__('getOriginalUrl')
-  })
-
-  it('Gives correct results, test case #1')
 })
