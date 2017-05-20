@@ -52,7 +52,7 @@ describe('Routes', () => {
   })
 })
 
-describe('getShortUrl', () => {
+describe('isValidUrl', () => {
   let server
   let isValidUrl
 
@@ -61,14 +61,31 @@ describe('getShortUrl', () => {
     isValidUrl = server.__get__('isValidUrl')
   })
 
-  it('Gives correct results', () => {
+  it('Detects basic URL syntax', () => {
     assert.equal(true, isValidUrl("https://google.com"))
     assert.equal(true, isValidUrl("http://google.com"))
+    assert.equal(false, isValidUrl("https://google"))
+    assert.equal(false, isValidUrl("http://google,com"))
+  })
+})
+
+describe('getShortUrl', () => {
+  let server
+  let getShortUrl
+
+  before(() => {
+    server = rewire('../server')
+    getShortUrl = server.__get__('getShortUrl')
+  })
+
+  it('Gives correct results', () => {
+    assert.deepEqual(true, getShortUrl("https://google.com"))
+    assert.deepEqual(true, getShortUrl("http://google.com"))
   })
 
   it('Gives error for invalid URLs', () => {
-    assert.equal(false, isValidUrl("https://google"))
-    assert.equal(false, isValidUrl("http://google,com"))
+    assert.deepEqual(false, getShortUrl("https://google"))
+    assert.deepEqual(false, getShortUrl("http://google,com"))
   })
 })
 
