@@ -87,6 +87,18 @@ describe('Routes', () => {
       .expect(200, done)
   })
 
+  it('/new/https://youtube.com responds with short URL #2', done => {
+    request(server)
+      .get('/new/https://youtube.com')
+      .set('Accept', 'application/json')
+      .expect('Content-Type', /json/)
+      .expect(res => {
+        assert.equal("https://youtube.com", res.body.originalUrl)
+        assert.equal("http://127.0.0.1:4000/2", res.body.shortUrl)
+      })
+      .expect(200, done)
+  })
+
   it('/1 gives 307', done => {
     request(server)
       .get('/1')
