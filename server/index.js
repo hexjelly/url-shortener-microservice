@@ -7,43 +7,44 @@ let app = express()
 let db
 
 mongo.connect(config[env].db, (err, mdb) => {
-  if (!err) {
-    db = mdb
-    // create collections if it doesn't exist
-    db.createCollection("urls", {}, (err, collection) => {
-      if (err) return console.log(err)
-    })
-    db.createCollection("counter", {}, (err, collection) => {
-      if (err) return console.log(err)
-    })
-  } else {
-    return console.log(err)
-  }
+  if (err) return console.log(err)
+
+  db = mdb
+  // create collections if it doesn't exist
+  db.createCollection("urls", {}, (err, collection) => {
+    if (err) return console.log(err)
+  })
+  db.createCollection("counter", {}, (err, collection) => {
+    if (err) return console.log(err)
+  })
 })
 
+// very simple and naive url checking
 function isValidUrl (url) {
   return /https?\:\/\/\S+\.\S+/i.test(url)
 }
 
 function getShortUrl (url, callback) {
   if (isValidUrl(url)) {
-    getNextSequence(url, (err, res) => {
-      if (err) callback(err)
-      else callback(null, { originalURL: url, shortURL: res })
-    })
+    getNextSequence(url, callback)
   } else {
     callback(null, { error: 'Invalid URL', context: url })
   }
 }
 
-function getOriginalUrl (id) {
-  // TODO: fix
+function getOriginalUrl (id, callback) {
   if (!db) {
-    return { error: "No database connection" }
+    callback({ error: "No database connection" })
   }
-
-  let result = { id: id }
-  return result
+  else {
+    db.collection("urls").findOne({ shortUrl: parseInt(id) }, { fields: { originalUrl: 1 } }, (err, doc) => {
+      if (err) callback(err)
+      else if (!doc) {
+        callback(null, { error: "Short URL not found" })
+      }
+      else callback(null, doc.originalUrl)
+    })
+  }
 }
 
 function getNextSequence (url, callback) {
@@ -67,7 +68,6 @@ function getNextSequence (url, callback) {
                 if (err) callback(err)
                 else {
                   callback(null, counterDoc.value.seq)
-                  console.log("added url:" + counterDoc.value.seq)
                 }
               })
             }
@@ -76,7 +76,6 @@ function getNextSequence (url, callback) {
 
         else {
           // return shorturl
-          console.log("found url:" + doc.shortUrl)
           callback(null, doc.shortUrl)
         }
       }
@@ -95,15 +94,19 @@ app.get('/new', (req, res) => {
 app.get('/new/:url(*)', (req, res) => {
   getShortUrl(req.params.url, (err, result) => {
     if (err) console.log(err)
-    else res.json(result)
+    else {
+      let selfUrl = `${req.protocol}://${req.get("host")}/${result}`
+      res.json({ originalUrl: req.params.url, shortUrl: selfUrl })
+    }
   })
 })
 
 app.get('/:id', (req, res) => {
-  let url = getOriginalUrl(req.params.id)
-  if (url.error) res.json(url.error)
-  else if (url.url) res.redirect(301, url.url)
-  else res.json({ error: "Short URL not found" })
+  getOriginalUrl(req.params.id, (err, url) => {
+    if (err) console.log(err)
+    else if (url.error) res.json(url)
+    else res.redirect(307, url)
+  })
 })
 
 module.exports = app
