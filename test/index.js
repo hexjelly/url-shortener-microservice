@@ -1,5 +1,4 @@
-const env = process.env.NODE_ENV = 'test'
-const config = require('../config')
+const db_url = process.env.NODE_ENV === 'production' ? process.env.MONGOLAB_URI : 'mongodb://localhost:27017/testurls'
 
 const request = require('supertest')
 const rewire = require('rewire')
@@ -13,7 +12,7 @@ let server
 describe('Routes', () => {
   before(() => {
     // reset test database
-    mongo.connect(config[env].db, (err, db) => {
+    mongo.connect(db_url, (err, db) => {
       if (err) return console.log(err)
       db.collection("urls").drop((err, reply) => {
 

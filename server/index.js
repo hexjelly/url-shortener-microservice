@@ -1,12 +1,12 @@
-const env = process.env.NODE_ENV || 'production'
-const config = require('../config')
+const db_url = process.env.NODE_ENV === 'production' ? process.env.MONGOLAB_URI : 'mongodb://localhost:27017/testurls'
+
 const express = require('express')
 const path = require('path')
 const mongo = require('mongodb').MongoClient
 let app = express()
 let db
 
-mongo.connect(config[env].db, (err, mdb) => {
+mongo.connect(db_url, (err, mdb) => {
   if (err) return console.log(err)
 
   db = mdb
