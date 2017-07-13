@@ -3,6 +3,9 @@
   "version": "1.0.0",
   "description": "URL shortener microservice",
   "main": "index.js",
+  "engines": {
+    "node": "8.1.4"
+  },
   "scripts": {
     "start": "node index",
     "test": "istanbul cover node_modules/mocha/bin/_mocha -- -R spec",

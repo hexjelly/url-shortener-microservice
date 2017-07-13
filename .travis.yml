@@ -3,7 +3,7 @@ services:
 language:
   - node_js
 node_js:
-  - node
+  - 8.1.4
 # sleep for mongo startup thing
 before_script:
   - sleep 15
