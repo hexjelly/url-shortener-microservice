@@ -8,7 +8,7 @@
   },
   "scripts": {
     "start": "node index",
-    "test": "istanbul cover node_modules/mocha/bin/_mocha -- -R spec",
+    "test": "istanbul cover node_modules/mocha/bin/_mocha -- --exit -R spec",
     "coveralls": "cat ./coverage/lcov.info | ./node_modules/.bin/coveralls"
   },
   "repository": {
