@@ -4,7 +4,7 @@
   "description": "URL shortener microservice",
   "main": "index.js",
   "engines": {
-    "node": "8.1.4"
+    "node": "10"
   },
   "scripts": {
     "start": "node index",
